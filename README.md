@@ -7,8 +7,6 @@ All data is stored locally using **localStorage** so your transactions stay save
 ---
 
 ## Live Demo
-
-You can add your deployment link here:
 Live URL: https://mini-expense-tracker-three.vercel.app/
 
 ## Features
@@ -63,4 +61,8 @@ Monthly analytics
 Dark mode
 
 Login system + backend support
+
+## Developed By
+
+__galwhocodes__ | Ishwarya | MERN Full Stack Developer
 
