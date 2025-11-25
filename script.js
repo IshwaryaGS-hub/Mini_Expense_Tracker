@@ -1,4 +1,3 @@
-// Elements
 const balance = document.getElementById("balance");
 const income = document.getElementById("income");
 const expense = document.getElementById("expense");
@@ -6,10 +5,8 @@ const list = document.getElementById("list");
 const addBtn = document.getElementById("add-btn");
 
 let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
-
 let chart;
 
-// Add Transaction
 addBtn.addEventListener("click", () => {
     const text = document.getElementById("text").value;
     let amount = Number(document.getElementById("amount").value);
@@ -20,18 +17,9 @@ addBtn.addEventListener("click", () => {
         return;
     }
 
-    //Prevent expenses before salary
-    const salaryExists = transactions.some(t => t.category === "Salary");
-
-    if (!salaryExists && category !== "Salary") {
-        alert("Please enter Salary first!");
-        return;
-    }
-
-    
-    // If expense → convert amount to negative
-    if (category !== "Salary") {
-        amount = -Math.abs(amount); // Always negative for expenses
+    // Income → positive, Expenditure → negative
+    if (category === "Expenditure") {
+        amount = -Math.abs(amount);
     }
 
     const transaction = {
@@ -49,18 +37,16 @@ addBtn.addEventListener("click", () => {
     document.getElementById("amount").value = "";
 });
 
-// Delete Transaction
 function deleteTransaction(id) {
     transactions = transactions.filter(t => t.id !== id);
     saveLocal();
     updateUI();
 }
 
-// Update UI
 function updateUI() {
     list.innerHTML = "";
 
-    let totalSalary = 0;
+    let totalIncome = 0;
     let totalExpenses = 0;
 
     transactions.forEach(t => {
@@ -71,7 +57,7 @@ function updateUI() {
 
         li.innerHTML = `
             <span class="font-medium">
-                ${t.text}  
+                ${t.text}
                 <span class="text-sm text-gray-500">(${t.category})</span>
                 <span class="ml-2 ${t.amount > 0 ? "text-green-600" : "text-red-600"}">
                     ₹${Math.abs(t.amount)}
@@ -82,27 +68,24 @@ function updateUI() {
 
         list.appendChild(li);
 
-        if (t.amount > 0) totalSalary += t.amount;
+        if (t.amount > 0) totalIncome += t.amount;
         else totalExpenses += Math.abs(t.amount);
     });
 
-    income.textContent = totalSalary;
+    income.textContent = totalIncome;
     expense.textContent = totalExpenses;
-
-    // Balance = Salary – Expenses
-    balance.textContent = totalSalary - totalExpenses;
+    balance.textContent = totalIncome - totalExpenses;
 
     updateChart();
 }
 
-// Chart
 function updateChart() {
     const categoryTotals = {};
 
     transactions.forEach(t => {
-        if (t.amount < 0) {
-            categoryTotals[t.category] =
-                (categoryTotals[t.category] || 0) + Math.abs(t.amount);
+        if (t.category === "Expenditure") {
+            categoryTotals[t.text] =
+                (categoryTotals[t.text] || 0) + Math.abs(t.amount);
         }
     });
 
@@ -124,6 +107,7 @@ function updateChart() {
                         "#ffce56",
                         "#4bc0c0",
                         "#9966ff",
+                        "#ff9f40",
                     ],
                 },
             ],
@@ -131,10 +115,8 @@ function updateChart() {
     });
 }
 
-// Save Local
 function saveLocal() {
     localStorage.setItem("transactions", JSON.stringify(transactions));
 }
 
-// Initial Load
 updateUI();
