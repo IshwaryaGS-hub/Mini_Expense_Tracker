@@ -64,5 +64,5 @@ Login system + backend support
 
 ## Developed By
 
-__galwhocodes__ | Ishwarya | MERN Full Stack Developer
+| Ishwarya | MERN Full Stack Developer
 
